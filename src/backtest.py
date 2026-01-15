@@ -2,11 +2,13 @@ import pandas as pd
 from sqlalchemy import create_engine
 import os
 
-os.makedirs("data/processed", exist_ok=True)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROCESSED_DIR = os.path.join(BASE_DIR, "data", "processed")
+
+os.makedirs(PROCESSED_DIR, exist_ok=True)
 
 engine = create_engine("postgresql://postgres:12345@localhost:5432/stockdb")
 
-# Get seasonal winners
 winners = pd.read_sql("""
 SELECT season, "Stock"
 FROM (
@@ -20,7 +22,6 @@ FROM (
 WHERE rnk = 1;
 """, engine)
 
-# Load season price data
 prices = pd.read_sql("""
 SELECT "Date","Stock","Close",season
 FROM stock_seasons
@@ -61,4 +62,7 @@ result = pd.DataFrame(history, columns=[
     "Year","Season","Stock","BuyPrice","SellPrice","Capital"
 ])
 
-result.to_csv("data/processed/backtest_results.csv")
+result.to_csv(os.path.join(PROCESSED_DIR, "backtest_results.csv"), index=False)
+
+print("✅ Backtest complete")
+print("Final Capital:", round(capital,2))

@@ -2,6 +2,9 @@ import yfinance as yf
 import pandas as pd
 import os
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+RAW_DIR = os.path.join(BASE_DIR, "data", "raw")
+
 stocks = [
     "DMART.NS","TRENT.NS","TITAN.NS","RELIANCE.NS","ITC.NS",
     "HINDUNILVR.NS","NESTLEIND.NS",
@@ -29,11 +32,10 @@ for stock in stocks:
     except Exception as e:
         print("❌ Error downloading", stock, e)
 
-# Make sure folder exists
-os.makedirs("data/raw", exist_ok=True)
+os.makedirs(RAW_DIR, exist_ok=True)
 
 final_df = pd.concat(all_data)
-final_df.to_csv("data/raw/nse_stocks_10y.csv", index=False)
+final_df.to_csv(os.path.join(RAW_DIR, "nse_stocks_10y.csv"), index=False)
 
 print("✅ Saved → data/raw/nse_stocks_10y.csv")
 print("Rows:", len(final_df))
