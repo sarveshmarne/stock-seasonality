@@ -23,6 +23,6 @@ def get_season(month):
 df["season"] = df["month"].apply(get_season)
 
 # IMPORTANT: Don't drop table because view depends on it
-df.to_sql("stock_seasons", engine, if_exists="append", index=False)
+df.to_sql("stock_seasons", engine, if_exists="replace", index=False)
 
 print("✅ Season-tagged data saved to stock_seasons")
